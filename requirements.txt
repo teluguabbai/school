@@ -1,5 +1,5 @@
 # --- Build tools
-pip>=25.2
+
 setuptools>=70.0
 wheel>=0.44
 
