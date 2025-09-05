@@ -34,7 +34,8 @@ pillow==10.4.0
 
 # --- Scientific / ML stack (optional)
 numpy==1.26.4
-scipy==1.10.1
+scipy==1.11.4
+
 scikit-learn==1.1.1
 pandas==1.5.3
 joblib==1.2.0
