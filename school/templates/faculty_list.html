@@ -1,0 +1,27 @@
+<h2>Faculty List</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Employee ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for faculty in faculties %}
+        <tr>
+            <td>{{ faculty.user.username }}</td>
+            <td>{{ faculty.user.get_full_name }}</td>
+            <td>{{ faculty.user.email }}</td>
+            <td>{{ faculty.department }}</td>
+            <td>{{ faculty.employee_id }}</td>
+            <td>
+                <a href="#">Edit</a> | <a href="#">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

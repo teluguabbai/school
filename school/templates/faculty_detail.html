@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Details - {{ faculty.user.get_full_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .btn-back {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Faculty Details
+        </div>
+        <div class="card-body">
+            <p><span class="detail-label">Username:</span> {{ faculty.user.username }}</p>
+            <p><span class="detail-label">Full Name:</span> {{ faculty.user.get_full_name }}</p>
+            <p><span class="detail-label">Email:</span> {{ faculty.user.email }}</p>
+            <p><span class="detail-label">Contact No:</span> {{ faculty.contact_no }}</p>
+            <p><span class="detail-label">Address:</span> {{ faculty.address }}</p>
+            <p><span class="detail-label">Department:</span> {{ faculty.department }}</p>
+            <p><span class="detail-label">Employee ID:</span> {{ faculty.employee_id }}</p>
+        </div>
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary btn-back">← Back to Dashboard</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container { margin-top: 30px; }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        thead { background: #007bff; color: white; }
+        tbody tr.low { background-color: #ffe6e6 !important; color: #b30000; }
+        .status-badge {
+            font-size: 0.85rem; padding: 4px 10px; border-radius: 8px;
+        }
+        .status-good { background: #d4edda; color: #155724; }
+        .status-low { background: #f8d7da; color: #721c24; }
+        .section-heading {
+            font-weight: 700;
+            color: #343a40;
+            margin: 25px 0 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Attendance Form -->
+    <div class="card">
+        <div class="card-header">📋 Mark Attendance</div>
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-4">
+                    <label class="form-label">Student</label>
+                    <select name="student_id" class="form-select" required>
+                        {% for student in attendance_data %}
+                            <option value="{{ student.student.id }}">
+                                {{ student.student.user.username }} (Roll: {{ student.student.roll_number }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select" required>
+                        <option value="Present">✅ Present</option>
+                        <option value="Absent">❌ Absent</option>
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Accordion for Class-wise Attendance -->
+    <div class="accordion" id="classAccordion">
+
+        <!-- 🔹 Monthly Attendance Summary Section -->
+        <h3 class="section-heading">📊 Monthly Attendance Summaries</h3>
+        {% regroup attendance_data by student.class_level as classwise_attendance %}
+        {% for class_group in classwise_attendance %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSummary{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSummary{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseSummary{{ forloop.counter }}">
+                    {{ class_group.grouper }} Class - Monthly Summary
+                </button>
+            </h2>
+            <div id="collapseSummary{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="headingSummary{{ forloop.counter }}" data-bs-parent="#classAccordion">
+                <div class="accordion-body">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Present Days</th>
+                            <th>Total Days</th>
+                            <th>Percentage</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in class_group.list %}
+                            <tr class="{% if data.low_attendance %}low{% endif %}">
+                                <td>{{ data.student.user.username }}</td>
+                                <td>{{ data.student.roll_number }}</td>
+                                <td>{{ data.present_days }}</td>
+                                <td>{{ data.total_days }}</td>
+                                <td>{{ data.percentage|floatformat:2 }}%</td>
+                                <td>
+                                    {% if data.low_attendance %}
+                                        <span class="status-badge status-low">⚠ Low Attendance</span>
+                                    {% else %}
+                                        <span class="status-badge status-good">✅ Good</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- 🔹 Daily Attendance Records Section -->
+        <h3 class="section-heading">📅 Daily Attendance Records</h3>
+        {% regroup attendance_data by student.class_level as classwise_records %}
+        {% for class_group in classwise_records %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDaily{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDaily{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseDaily{{ forloop.counter }}">
+                    {{ class_group.grouper }} Class - Daily Records
+                </button>
+            </h2>
+            <div id="collapseDaily{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="headingDaily{{ forloop.counter }}" data-bs-parent="#classAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped table-hover align-middle text-center">
+                        <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in class_group.list %}
+                            {% for record in data.student.attendance_set.all %}
+                                <tr>
+                                    <td>{{ data.student.user.username }}</td>
+                                    <td>{{ data.student.roll_number }}</td>
+                                    <td>{{ record.date }}</td>
+                                    <td>
+                                        {% if record.status == "Present" %}
+                                            <span class="badge bg-success">Present</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Absent</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

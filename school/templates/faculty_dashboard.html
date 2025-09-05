@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Mobile scaling -->
+    <title>Faculty Dashboard -  School</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .accordion-button::after {
+            transition: transform .2s ease-in-out;
+        }
+        .accordion-button:not(.collapsed)::after {
+            transform: rotate(180deg);
+        }
+        /* Tables scroll on small devices */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        /* Adjust font sizes and buttons for mobile */
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .card-header {
+                font-size: 0.9rem;
+            }
+            .btn-sm {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .navbar-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#"> School</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse ms-auto" id="navbarNav">
+            <div class="d-flex ms-auto flex-column flex-sm-row align-items-sm-center">
+                <span class="navbar-text text-white me-3 mb-2 mb-sm-0">
+                    Logged in as {{ faculty.user.first_name }}
+                </span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Welcome, {{ faculty.user.first_name }} (Faculty)</h1>
+
+    <div class="row">
+        <!-- Faculty Info -->
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">Your Info</div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> {{ faculty.user.username }}</p>
+                    <p><strong>Email:</strong> {{ faculty.user.email }}</p>
+                    <p><strong>Department:</strong> {{ faculty.department }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Attendance -->
+        <div class="col-12 col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center flex-wrap">
+                    <span>📅 Today's Class-wise Attendance</span>
+                    <a href="{% url 'mark_attendance' %}" class="btn btn-sm btn-light mt-2 mt-sm-0">Mark Attendance</a>
+                </div>
+                <div class="card-body table-responsive">
+                    {% if today_attendance %}
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Total Students</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th>Attendance %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for class_level, data in today_attendance.items %}
+                                    <tr>
+                                        <td>
+                                            {{ class_level }}
+                                            {% if class_level == "1" %}<sup>st</sup>
+                                            {% elif class_level == "2" %}<sup>nd</sup>
+                                            {% elif class_level == "3" %}<sup>rd</sup>
+                                            {% else %}<sup>th</sup>{% endif %} Class
+                                        </td>
+                                        <td>{{ data.total }}</td>
+                                        <td><span class="badge bg-success">{{ data.present }}</span></td>
+                                        <td><span class="badge bg-danger">{{ data.absent }}</span></td>
+                                        <td>
+                                            {% if data.total > 0 %}
+                                                {{ data.percentage|floatformat:2 }}%
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted">No attendance records for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Homework Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning d-flex justify-content-between flex-wrap align-items-center">
+            <span>Assigned Homework</span>
+            <div class="mt-2 mt-sm-0">
+                <a href="{% url 'upload_homework' %}" class="btn btn-sm btn-dark me-2 mb-1 mb-sm-0">Assign Homework</a>
+                <a href="{% url 'add_marks' %}" class="btn btn-sm btn-dark me-2 mb-1 mb-sm-0">Add Marks</a>
+                <a href="{% url 'student_performance' %}" class="btn btn-sm btn-dark mb-1 mb-sm-0">View Student Performance</a>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if homework_list %}
+                <ul class="list-group">
+                    {% for hw in homework_list %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row">
+                            <div>
+                                <strong>{{ hw.title }}</strong> - Due: {{ hw.due_date|date:"d M Y" }}<br>
+                                {{ hw.description }}
+                            </div>
+                            <div class="mt-2 mt-sm-0">
+                                <a href="{% url 'delete_homework' hw.id %}"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Are you sure you want to delete this homework?');">
+                                    Delete
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No homework assigned yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Attendance Section (Accordion) -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">Class-wise Attendance (Date-wise)</div>
+        <div class="card-body">
+            {% if attendance_by_class %}
+            <div class="accordion" id="attendanceAccordion">
+                {% for class_level, records in attendance_by_class.items %}
+                    {% regroup records by date as date_list %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}">
+                                {{ class_level }}{% if class_level == "1" %}<sup>st</sup>{% elif class_level == "2" %}<sup>nd</sup>{% elif class_level == "3" %}<sup>rd</sup>{% else %}<sup>th</sup>{% endif %} Class
+                            </button>
+                        </h2>
+                        <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#attendanceAccordion">
+                            <div class="accordion-body table-responsive">
+                                <div class="accordion" id="dateAccordion-{{ forloop.counter }}">
+                                    {% for date_group in date_list %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="dateHeading-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                                                    {{ date_group.grouper|date:"d M Y" }}
+                                                </button>
+                                            </h2>
+                                            <div id="dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#dateAccordion-{{ forloop.parentloop.counter }}">
+                                                <div class="accordion-body table-responsive">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead class="table-dark">
+                                                            <tr>
+                                                                <th>Student</th>
+                                                                <th>Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for record in date_group.list %}
+                                                                <tr>
+                                                                    <td>{{ record.student.user.get_full_name }}</td>
+                                                                    <td>
+                                                                        {% if record.status == "Present" %}
+                                                                            <span class="badge bg-success">Present</span>
+                                                                        {% else %}
+                                                                            <span class="badge bg-danger">Absent</span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <p>No attendance records available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Marks Management -->
+    <h2>Marks Management</h2>
+    <a href="{% url 'add_marks' %}" class="btn btn-success mb-3">Add Marks</a>
+
+    <div class="accordion" id="marksAccordion">
+        {% regroup students by class_level as marks_class_list %}
+        {% for class_group in marks_class_list %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="marksHeading{{ forloop.counter }}">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#marksCollapse{{ forloop.counter }}"
+                            aria-expanded="false"
+                            aria-controls="marksCollapse{{ forloop.counter }}">
+                        Class {{ class_group.grouper }}
+                    </button>
+                </h2>
+                <div id="marksCollapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="marksHeading{{ forloop.counter }}" data-bs-parent="#marksAccordion">
+                    <div class="accordion-body table-responsive">
+                        <div class="accordion" id="studentAcc{{ forloop.counter }}">
+                            {% for student in class_group.list %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="studHeading{{ forloop.parentloop.counter }}-{{ student.id }}">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}"
+                                                aria-expanded="false"
+                                                aria-controls="studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}">
+                                            {{ student.user.get_full_name|default:student.user.username }}
+                                            {% if student.roll_number %} ({{ student.roll_number }}){% endif %}
+                                        </button>
+                                    </h2>
+                                    <div id="studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}" class="accordion-collapse collapse" aria-labelledby="studHeading{{ forloop.parentloop.counter }}-{{ student.id }}">
+                                        <div class="accordion-body table-responsive">
+                                            {% with marks=student.marks_set.all %}
+                                                {% if marks %}
+                                                    {% regroup marks by exam_type as exam_groups %}
+                                                    {% for exam_group in exam_groups %}
+                                                        <h5 class="bg-light p-2 mb-2">{{ exam_group.grouper|default:"General" }} Marks</h5>
+                                                        <table class="table table-bordered table-striped mb-4">
+                                                            <thead class="table-dark">
+                                                                <tr>
+                                                                    <th>Subject</th>
+                                                                    <th>Marks</th>
+                                                                    <th>Max Marks</th>
+                                                                    <th>Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for mark in exam_group.list %}
+                                                                    <tr>
+                                                                        <td>{{ mark.subject }}</td>
+                                                                        <td>{{ mark.marks }}</td>
+                                                                        <td>{{ mark.max_marks }}</td>
+                                                                        <td>
+                                                                            <a href="{% url 'edit_marks' mark.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                                                            <a href="{% url 'delete_marks' mark.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <p class="text-muted mb-0">No marks available for this student.</p>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

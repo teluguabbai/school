@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SDR School Portal</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #fdfdfd;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    /* Navbar */
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #4285F4 !important; /* Google Blue */
+    }
+    .navbar-brand span {
+      color: #EA4335; /* Google Red */
+    }
+    .navbar-brand span:last-child {
+      color: #34A853; /* Google Green */
+    }
+    .nav-link {
+      color: #333 !important;
+      font-weight: 500;
+    }
+    .nav-link:hover {
+      color: #4285F4 !important;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url("https://source.unsplash.com/1600x600/?school,students") no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 150px 0;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: bold;
+      animation: fadeInDown 1.5s;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      animation: fadeInUp 2s;
+    }
+
+    @keyframes fadeInDown {
+      from {opacity: 0; transform: translateY(-50px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(50px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #202124;
+    }
+    .faculty-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #4285F4;
+      transition: transform 0.3s;
+    }
+    .faculty-img:hover {
+      transform: scale(1.1);
+    }
+    .contact-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+      color: #4285F4;
+    }
+    footer {
+      background: #4285F4;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      transition: 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#">SDR<span> School</span><span>.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto me-3">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#achievements">Achievements</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faculty">Faculty</a></li>
+          <li class="nav-item"><a class="nav-link" href="#timetable">Timetable</a></li>
+          <li class="nav-item"><a class="nav-link" href="#activities">Activities</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero text-center">
+    <div class="container">
+      <h1>“Education is the most powerful weapon which you can use to change the world.”</h1>
+      <p class="lead">Welcome to SDR School – Where Excellence Meets Opportunity</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-5 text-center">
+    <div class="container">
+      <h2 class="section-title">About Our School</h2>
+      <p class="lead">SDR School is dedicated to nurturing young minds through quality education,
+        extracurricular activities, and holistic development. Our mission is to inspire excellence,
+        discipline, and creativity in every student.</p>
+    </div>
+  </section>
+
+  <!-- Achievements Section -->
+  <section id="achievements" class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="section-title">Our Achievements</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 p-3">
+            <i class="fa-solid fa-trophy fa-2x text-warning mb-3"></i>
+            <h5>100% Board Results</h5>
+            <p>Consistently achieving excellent academic results with top ranks.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 p-3">
+            <i class="fa-solid fa-medal fa-2x text-success mb-3"></i>
+            <h5>Sports Excellence</h5>
+            <p>Winners at district and state level championships.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 p-3">
+            <i class="fa-solid fa-flask fa-2x text-primary mb-3"></i>
+            <h5>Science Innovation</h5>
+            <p>National-level recognition in science exhibitions and fairs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Faculty Section -->
+<section id="faculty" class="py-5">
+  <div class="container text-center">
+    <h2 class="section-title">Our Faculty</h2>
+    <div class="row g-4">
+      {% for faculty in faculty_list %}
+      <div class="col-md-3">
+        <!-- Placeholder Image (optional: add image field in FacultyProfile later) -->
+        <img src="https://source.unsplash.com/120x120/?teacher,education" 
+             class="faculty-img mb-3" alt="{{ faculty.user.first_name }}">
+        <h6>{{ faculty.user.first_name }} {{ faculty.user.last_name }}</h6>
+        <p><strong>{{ faculty.department }}</strong></p>
+        <p>Employee ID: {{ faculty.employee_id }}</p>
+        <p>📞 {{ faculty.contact_no }}</p>
+        <p>📍 {{ faculty.address }}</p>
+      </div>
+      {% empty %}
+      <p>No faculty details available.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% comment %} <!-- Timetable Section -->
+<section id="timetable" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center">Class Timetables</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center">
+        <thead class="table-primary">
+          <tr>
+            <th>Class</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for timetable in timetables %}
+          <tr>
+            <td>{{ timetable.class_name }}</td>
+            <td>{{ timetable.monday }}</td>
+            <td>{{ timetable.tuesday }}</td>
+            <td>{{ timetable.wednesday }}</td>
+            <td>{{ timetable.thursday }}</td>
+            <td>{{ timetable.friday }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">No timetable available</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section> {% endcomment %}
+
+  <!-- Activities Section -->
+  <section id="activities" class="py-5">
+    <div class="container text-center">
+      <h2 class="section-title">School Activities</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <img src="https://source.unsplash.com/400x300/?sports" class="img-fluid rounded shadow-sm" alt="Sports">
+          <h5 class="mt-2">Sports</h5>
+        </div>
+        <div class="col-md-4">
+          <img src="https://source.unsplash.com/400x300/?music" class="img-fluid rounded shadow-sm" alt="Music">
+          <h5 class="mt-2">Music & Arts</h5>
+        </div>
+        <div class="col-md-4">
+          <img src="https://source.unsplash.com/400x300/?science-fair" class="img-fluid rounded shadow-sm" alt="Science Fair">
+          <h5 class="mt-2">Science Fair</h5>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="section-title">Contact Us</h2>
+      <p><i class="fa-solid fa-location-dot contact-icon"></i> SDR School, City, State, India</p>
+      <p><i class="fa-solid fa-phone contact-icon"></i> +91 98765 43210</p>
+      <p><i class="fa-solid fa-envelope contact-icon"></i> contact@sdrschool.edu</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 SDR School. All Rights Reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

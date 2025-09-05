@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Performance Dashboard - SDR School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eef2f7;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        table th, table td {
+            vertical-align: middle !important;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.05);
+        }
+
+        .summary-card p {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        select.form-select {
+            border-radius: 8px;
+        }
+
+        .btn-primary, .btn-primary:hover {
+            border-radius: 8px;
+        }
+
+        .table-responsive {
+            margin-top: 15px;
+        }
+
+        /* Home button style */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .row .col-md-6 {
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            .home-btn {
+                top: 15px;
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Table header style */
+        table thead th {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        table tbody tr:hover {
+            background-color: rgba(13,110,253,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5 position-relative">
+
+    <!-- Home Button -->
+    <a href="{% url 'home' %}" class="btn btn-primary home-btn">Home</a>
+
+    <h2>Student Performance Dashboard</h2>
+
+    <!-- Student Selection -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">Select Student</div>
+        <div class="card-body">
+            <form method="GET">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="classSelect" class="form-label">Class</label>
+                        <select class="form-select" id="classSelect" name="class_level" required>
+                            <option value="">-- Select Class --</option>
+                            {% for class_level, students in students_by_class.items %}
+                                <option value="{{ class_level }}" {% if class_level == selected_class %}selected{% endif %}>
+                                    {{ class_level }}{% if class_level == "1" %}st{% elif class_level == "2" %}nd{% elif class_level == "3" %}rd{% else %}th{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="studentSelect" class="form-label">Student</label>
+                        <select class="form-select" name="student_id" required>
+                            <option value="">-- Select Student --</option>
+                            {% if students_in_class %}
+                                {% for student in students_in_class %}
+                                    <option value="{{ student.id }}" {% if selected_student and student.id == selected_student.id %}selected{% endif %}>
+                                        {{ student.user.get_full_name }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">-- Select a class first --</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" type="submit">Show Performance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_student %}
+    <!-- Student Details -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">Student Details</div>
+        <div class="card-body summary-card">
+            <p><strong>Name:</strong> {{ selected_student.user.get_full_name }}</p>
+            <p><strong>Class:</strong> {{ selected_student.class_level }}</p>
+            <p><strong>Email:</strong> {{ selected_student.user.email }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Attendance Summary -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">Attendance Summary</div>
+                <div class="card-body summary-card">
+                    {% if attendance_summary %}
+                        <table class="table table-bordered mb-0">
+                            <tr><th>Total Days</th><td>{{ attendance_summary.total }}</td></tr>
+                            <tr><th>Present</th><td>{{ attendance_summary.present }}</td></tr>
+                            <tr><th>Absent</th><td>{{ attendance_summary.absent }}</td></tr>
+                            <tr><th>Percentage</th><td>{{ attendance_summary.percentage|floatformat:2 }}%</td></tr>
+                        </table>
+                    {% else %}
+                        <p>No attendance data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Marks Summary -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">Marks Summary</div>
+                <div class="card-body table-responsive">
+                    {% if marks_summary %}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Exam</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Max Marks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exam_type, marks_list in marks_summary.items %}
+                                    {% for mark in marks_list %}
+                                        <tr>
+                                            <td>{{ mark.subject }}</td>
+                                            <td>{{ exam_type }}</td>
+                                            <td>{{ mark.marks }}</td>
+                                            <td>{{ mark.max_marks }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No marks available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

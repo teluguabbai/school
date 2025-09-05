@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Marks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
+        h2 { text-align: center; margin-bottom: 20px; }
+        .student-info, .marks-info, form {
+            padding: 15px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        label { font-weight: bold; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        button { margin-top: 15px; padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: darkgreen; }
+        @media (max-width: 576px) {
+            h2 { font-size: 1.4rem; }
+            .student-info, .marks-info, form { width: 100%; margin: 10px 0; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header with Home Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="mb-0 flex-grow-1 text-center">Edit Marks - {{ student.user.username }}</h2>
+        <a href="{% url 'faculty_dashboard' %}" class="btn btn-primary ms-3 mt-2 mt-sm-0">Home</a>
+    </div>
+
+    <!-- Student Details -->
+    <div class="student-info">
+        <h3>Student Details</h3>
+        <p><strong>Name:</strong> {{ student.user.username }}</p>
+        <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+        <p><strong>Class:</strong> {{ student.class_level }}</p>
+        <p><strong>Department:</strong> {{ student.department }}</p>
+    </div>
+
+    <!-- Current Marks -->
+    <div class="marks-info">
+        <h3>Current Marks</h3>
+        <p><strong>Subject:</strong> {{ marks.subject }}</p>
+        <p><strong>Marks Obtained:</strong> {{ marks.marks }}</p>
+        <p><strong>Maximum Marks:</strong> {{ marks.max_marks }}</p>
+        <p><strong>Percentage:</strong> {{ percentage|floatformat:2 }}%</p>
+        <p><strong>Grade:</strong> {{ marks.grade }}</p>
+    </div>
+
+    <!-- Update Marks Form -->
+    <form method="post">
+        {% csrf_token %}
+        <label for="subject">Subject</label>
+        <input type="text" name="subject" value="{{ marks.subject }}" required>
+
+        <label for="marks">Marks Obtained</label>
+        <input type="number" name="marks" value="{{ marks.marks }}" required>
+
+        <label for="max_marks">Maximum Marks</label>
+        <input type="number" name="max_marks" value="{{ marks.max_marks }}" required>
+
+        <label for="grade">Grade</label>
+        <select name="grade" required>
+            <option value="A" {% if marks.grade == "A" %}selected{% endif %}>A</option>
+            <option value="B" {% if marks.grade == "B" %}selected{% endif %}>B</option>
+            <option value="C" {% if marks.grade == "C" %}selected{% endif %}>C</option>
+            <option value="D" {% if marks.grade == "D" %}selected{% endif %}>D</option>
+            <option value="F" {% if marks.grade == "F" %}selected{% endif %}>F</option>
+        </select>
+
+        <button type="submit">Update Marks</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Dashboard - SDR School</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            font-weight: 600;
+        }
+
+        table {
+            font-size: 0.95rem;
+        }
+
+        .list-group-item {
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Fix */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            .card {
+                margin-bottom: 20px;
+            }
+            table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Logout Button -->
+<div class="container mt-3 text-end">
+    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+</div>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Welcome, {{ student.user.first_name }} {{ student.user.last_name }}</h1>
+
+    <div class="row g-4">
+        <!-- Student Info -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Your Info</div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> {{ student.user.username }}</p>
+                    <p><strong>Email:</strong> {{ student.user.email }}</p>
+                    <p><strong>Department:</strong> {{ student.department }}</p>
+                    <p>
+                        <strong>Class:</strong> {{ student.class_level }}
+                        {% if student.class_level == "1" %}
+                            <sup>st</sup>
+                        {% elif student.class_level == "2" %}
+                            <sup>nd</sup>
+                        {% else %}
+                            <sup>th</sup>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="col-lg-8 col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">Attendance</div>
+                <div class="card-body">
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-success text-white">Attendance Percentage</div>
+                        <div class="card-body">
+                            <h6>This Month</h6>
+                            <p><strong>Attendance Percentage:</strong> {{ attendance_percentage|floatformat:2 }}%</p>
+                            {% if attendance_percentage < 75 %}
+                                <p class="text-danger">⚠ Low attendance! Please improve.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if attendance %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in attendance %}
+                                        <tr>
+                                            <td>{{ record.date }}</td>
+                                            <td>{{ record.status }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No attendance records available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marks -->
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">Marks</div>
+        <div class="card-body">
+            {% if marks_by_exam %}
+                {% for exam_type, exam_marks in marks_by_exam.items %}
+                    <h5 class="mt-3 text-primary">{{ exam_type }}</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Marks</th>
+                                    <th>Max Marks</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in exam_marks %}
+                                    <tr>
+                                        <td>{{ m.subject }}</td>
+                                        <td>{{ m.marks }}</td>
+                                        <td>{{ m.max_marks }}</td>
+                                        <td>{{ m.grade }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No marks available yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Homework Assigned -->
+    <div class="card mt-4">
+        <div class="card-header bg-warning">Homework Assigned</div>
+        <div class="card-body">
+            {% if homework_list %}
+                <ul class="list-group">
+                    {% for hw in homework_list %}
+                        <li class="list-group-item">
+                            <strong>{{ hw.title }}</strong> - Due: {{ hw.due_date }}<br>
+                            {{ hw.description }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No homework assigned.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Submissions -->
+    <div class="card mt-4 mb-5">
+        <div class="card-header bg-secondary text-white">Your Homework Submissions</div>
+        <div class="card-body">
+            {% if submissions %}
+                <ul class="list-group">
+                    {% for sub in submissions %}
+                        <li class="list-group-item">
+                            {{ sub.homework.title }} - Submitted at: {{ sub.submitted_at }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven’t submitted any homework yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

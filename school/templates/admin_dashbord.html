@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDR School Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #343a40 !important;
+            padding: 10px 15px;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .navbar .btn {
+            padding: 4px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Titles */
+        .main-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        h2 {
+            font-weight: 600;
+            color: #444;
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #0d6efd;
+            font-size: 1.3rem;
+        }
+
+        /* Cards */
+        .card-custom {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+
+        /* Tables */
+        table {
+            font-size: 0.9rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #007bff !important;
+            color: white;
+            font-size: 0.9rem;
+        }
+        td {
+            vertical-align: middle;
+        }
+        .btn-action {
+            margin-right: 4px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+        }
+        .low-attendance {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+        }
+
+        /* Accordion */
+        .accordion-button {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .accordion-button:not(.collapsed) {
+            color: #0d6efd;
+            background-color: #e9f3ff;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .main-title { font-size: 1.5rem; }
+            h2 { font-size: 1.1rem; }
+            .navbar .btn { font-size: 0.75rem; padding: 3px 7px; }
+            table { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">SDR Admin</a>
+        <div class="ms-auto d-flex gap-2 flex-wrap">
+            <a href="{% url 'user_list' %}" class="btn btn-primary btn-sm">User Groups</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm">Dashboard</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 class="text-center main-title">Admin Dashboard</h1>
+
+    <!-- Faculty Management -->
+    <div class="card-custom">
+        <h2>Faculty Management</h2>
+        <p class="text-muted">View & manage faculty details</p>
+        <a href="{% url 'add_faculty' %}" class="btn btn-success btn-sm mb-3">➕ Add Faculty</a>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Employee ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for faculty in faculty %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'faculty_detail' faculty.id %}" class="username-link">
+                                {{ faculty.user.username }}
+                            </a>
+                        </td>
+                        <td>{{ faculty.user.get_full_name }}</td>
+                        <td>{{ faculty.user.email }}</td>
+                        <td>{{ faculty.department }}</td>
+                        <td>{{ faculty.employee_id }}</td>
+                        <td>
+                            <a href="{% url 'edit_faculty' faculty.id %}" class="btn btn-warning btn-sm btn-action">Edit</a>
+                            <a href="{% url 'delete_faculty' faculty.id %}" class="btn btn-danger btn-sm btn-action">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No faculty found.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Student Management -->
+    <div class="card-custom">
+        <h2>Student Management</h2>
+        <p class="text-muted">View & manage student details class-wise</p>
+        <a href="{% url 'add_student' %}" class="btn btn-success btn-sm mb-3">➕ Add Student</a>
+
+        <div class="accordion" id="studentAccordion">
+            {% regroup students by class_level as class_list %}
+            {% for class_group in class_list %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" 
+                                aria-controls="collapse{{ forloop.counter }}">
+                            Class {{ class_group.grouper }} ({{ class_group.list|length }} Students)
+                        </button>
+                    </h2>
+                    
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" 
+                         aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#studentAccordion">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Full Name</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Class</th>
+                                            <th>Roll Number</th>
+                                            <th>Attendance %</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for student in class_group.list %}
+                                        <tr class="{% if student.attendance_percentage < 75 %}low-attendance{% endif %}">
+                                            <td>{{ student.user.username }}</td>
+                                            <td>{{ student.user.get_full_name }}</td>
+                                            <td>{{ student.user.email }}</td>
+                                            <td>{{ student.department }}</td>
+                                            <td>{{ student.class_level }}</td>
+                                            <td>{{ student.roll_number }}</td>
+                                            <td>{{ student.attendance_percentage }}%</td>
+
+                                            <td>
+                                                <a href="{% url 'edit_student' student.id %}" class="btn btn-warning btn-sm btn-action">Edit</a>
+                                                <a href="{% url 'delete_student' student.id %}" class="btn btn-danger btn-sm btn-action">Delete</a>
+                                                <a href="{% url 'manage_attendance' student.id %}" class="btn btn-primary btn-sm btn-action">Attendance</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Marks Management -->
+    <div class="card-custom">
+        <h2>Marks Management</h2>
+        <a href="{% url 'add_marks' %}" class="btn btn-success btn-sm mb-3">➕ Add Marks</a>
+
+        <div class="accordion" id="marksAccordion">
+            {% regroup students by class_level as marks_class_list %}
+            {% for class_group in marks_class_list %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="marksHeading{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#marksCollapse{{ forloop.counter }}" aria-expanded="false" 
+                                aria-controls="marksCollapse{{ forloop.counter }}">
+                            Class {{ class_group.grouper }}
+                        </button>
+                    </h2>
+                    <div id="marksCollapse{{ forloop.counter }}" class="accordion-collapse collapse" 
+                         aria-labelledby="marksHeading{{ forloop.counter }}" data-bs-parent="#marksAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="studentAccordion{{ forloop.counter }}">
+                                {% for student in class_group.list %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="studentHeading{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                    data-bs-target="#studentCollapse{{ forloop.parentloop.counter }}{{ forloop.counter }}" 
+                                                    aria-expanded="false" 
+                                                    aria-controls="studentCollapse{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                                {{ student.user.get_full_name }} ({{ student.roll_number }})
+                                            </button>
+                                        </h2>
+                                        <div id="studentCollapse{{ forloop.parentloop.counter }}{{ forloop.counter }}" 
+                                             class="accordion-collapse collapse" 
+                                             aria-labelledby="studentHeading{{ forloop.parentloop.counter }}{{ forloop.counter }}" 
+                                             data-bs-parent="#studentAccordion{{ forloop.parentloop.counter }}">
+
+                                            <div class="accordion-body">
+                                                {% if student.marks_set.all %}
+                                                    {% regroup student.marks_set.all by exam_type as exam_groups %}
+                                                    {% for exam_group in exam_groups %}
+                                                        <h6 class="bg-light p-2">{{ exam_group.grouper }} Marks</h6>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered mb-3 align-middle">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Subject</th>
+                                                                        <th>Marks</th>
+                                                                        <th>Max Marks</th>
+                                                                        <th>Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for mark in exam_group.list %}
+                                                                    <tr>
+                                                                        <td>{{ mark.subject }}</td>
+                                                                        <td>{{ mark.marks }}</td>
+                                                                        <td>{{ mark.max_marks }}</td>
+                                                                        <td>
+                                                                            <a href="{% url 'edit_marks' mark.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                                                            <a href="{% url 'delete_marks' mark.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <p>No marks available for this student.</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
