@@ -2,6 +2,7 @@
 
 setuptools>=70.0
 wheel>=0.44
+gunicorn==21.2.0
 
 # --- Core Django stack
 Django==4.2.20
