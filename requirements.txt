@@ -4,6 +4,14 @@ setuptools>=70.0
 wheel>=0.44
 gunicorn==21.2.0
 
+psycopg2-binary
+dj-database-url
+whitenoise
+
+# optional but useful
+python-dotenv
+
+
 # --- Core Django stack
 Django==4.2.20
 asgiref==3.8.1
