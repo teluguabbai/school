@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-flkjup$_uyd=0#yg)4(@4d96kzg8oo7ky86bf*k#f$zq&v67zy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "school-hq2z.onrender.com",  # your Render domain
+    "localhost",
+    "127.0.0.1",
+]
 
 
 LOGIN_URL = 'login'
