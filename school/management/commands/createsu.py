@@ -10,7 +10,7 @@ class Command(BaseCommand):
         User = get_user_model()
 
         username = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
-        email = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
+        email = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@gmail.com")
         password = os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin123")
 
         # 🔹 Create superuser if not exists
@@ -35,3 +35,4 @@ class Command(BaseCommand):
         if not user.groups.filter(name="Admin").exists():
             user.groups.add(admin_group)
             self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' added to Admin group"))
+
