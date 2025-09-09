@@ -709,7 +709,6 @@ def faculty_detail(request, faculty_id):
 # --------------------------
 @login_required
 @user_passes_test(is_faculty)
-@user_passes_test(is_admin)
 def upload_homework(request):
     faculty = FacultyProfile.objects.get(user=request.user)
 
