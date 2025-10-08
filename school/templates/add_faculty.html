@@ -3,79 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Faculty</title>
+    <title>Add Faculty - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            /* Google Blue */
+            --google-blue: #1a73e8;
+            /* Lighter background */
+            --background-color: #f8f9fa;
+            /* Card background */
+            --card-background: #ffffff;
+            /* Border and shadow */
+            --shadow-light: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+        }
+
         body {
-            background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            overflow: hidden;
-            animation: fadeIn 0.8s ease-in-out;
-        }
-        .card-header {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        .card-header h2 {
+            background-color: var(--background-color);
+            font-family: 'Roboto', sans-serif;
+            color: #202124; /* Dark gray for text */
             margin: 0;
-            font-weight: 700;
+            padding: 0;
         }
+
+        .center-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 10px; /* Add padding for small screens */
+        }
+
+        .card-google {
+            border-radius: 8px; /* Softer rounded corners */
+            box-shadow: var(--shadow-light); /* Material-like shadow */
+            border: 1px solid #dadce0; /* Subtle border */
+            background-color: var(--card-background);
+            max-width: 480px; /* Slightly narrower for a focused form */
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card-header-google {
+            background: none; /* No color background for the header */
+            border-bottom: none;
+            text-align: left; /* Aligned left for a Google look */
+            padding: 24px 24px 16px 24px;
+        }
+
+        .card-header-google h2 {
+            margin: 0;
+            font-size: 24px; /* Slightly larger title */
+            font-weight: 500;
+            color: #202124;
+        }
+
+        .card-body-google {
+            padding: 0 24px 32px 24px; /* More standard internal padding */
+        }
+
+        /* Styling for form elements to look like Google Input fields */
         form label {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #333;
+            font-weight: 400;
+            margin-bottom: 2px;
+            color: #5f6368; /* Gray for labels */
+            font-size: 14px;
         }
-        form input, form select, form textarea {
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 0.95rem;
-            border: 1px solid #ced4da;
-            transition: all 0.3s ease-in-out;
+
+        form .form-control, form select {
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            transition: all 0.2s ease-in-out;
+            margin-top: 4px; /* Space between label and input */
         }
-        form input:focus, form select:focus, form textarea:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 8px rgba(0,123,255,0.3);
+
+        form .form-control:focus, form select:focus, form textarea:focus {
+            border-color: var(--google-blue);
+            box-shadow: 0 0 0 1px var(--google-blue); /* Blue focus ring */
+            background-color: #fff;
         }
-        .btn-custom {
-            background: #007bff;
+
+        /* Custom button styling */
+        .btn-google {
+            background-color: var(--google-blue);
+            color: white;
             border: none;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 1rem;
-            border-radius: 10px;
-            transition: 0.3s ease-in-out;
+            border-radius: 4px; /* Smaller border radius */
+            padding: 10px 24px;
+            text-transform: none; /* Keep capitalization normal */
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
-        .btn-custom:hover {
-            background: #0056b3;
-            transform: scale(1.03);
+
+        .btn-google:hover {
+            background-color: #1565c0; /* Darker blue on hover */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transform: none; /* Remove previous transform */
         }
+        
+        /* Ensures form-control in form.as_p gets the right width and spacing */
+        .card-body-google .mb-3 p {
+            margin-bottom: 16px; /* Standard spacing for paragraphs (form fields) */
+        }
+        
+        .card-body-google .mb-3 label {
+             display: block; /* Make labels take full width */
+        }
+        
+        /* Custom spacing for the submit button area */
+        .submit-area {
+            padding-top: 8px; 
+        }
+
         @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(20px);}
+            from {opacity: 0; transform: translateY(10px);}
             to {opacity: 1; transform: translateY(0);}
         }
+
+        /* Enhanced Responsiveness for very small screens */
         @media (max-width: 576px) {
-            .card { margin: 15px; }
+            .center-container {
+                padding: 10px;
+                align-items: flex-start; /* Start alignment on very small screens */
+            }
+            .card-google {
+                margin-top: 10px;
+                box-shadow: none; /* Remove shadow on small screens for a full-bleed look */
+                border: none;
+            }
+            .card-header-google, .card-body-google {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .card-header-google h2 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card w-100" style="max-width: 520px;">
-            <div class="card-header">
-                <h2> Add Faculty</h2>
+    <div class="center-container">
+        <div class="card-google">
+            <div class="card-header-google">
+                <h2>Add Faculty</h2>
             </div>
-            <div class="card-body p-4">
+            <div class="card-body-google">
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    <div class="mb-3">
+                    <div class="mb-3 form-fields">
                         {{ form.as_p }}
                     </div>
-                    <button type="submit" class="btn btn-custom w-100 py-2">Add Faculty</button>
+                    <div class="submit-area d-grid">
+                        <button type="submit" class="btn btn-google">Add Faculty</button>
+                    </div>
                 </form>
             </div>
         </div>
