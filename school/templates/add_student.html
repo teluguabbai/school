@@ -5,67 +5,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Student</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body style="background-color: #f8f9fa;">
 
-<div class="container mt-5 p-4 shadow-lg rounded" style="background-color: white; max-width: 600px;">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* Google/Material Design Color Palette & Variables */
+        :root {
+            --primary-color: #4285F4; /* Google Blue */
+            --secondary-color: #34A853; /* Google Green */
+            --light-gray-bg: #f8f9fa;
+            --text-color-dark: #202124;
+            --text-color-light: #5f6368;
+            /* Official Google-style shadow for card elevation */
+            --shadow-elevation: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+
+        body {
+            background-color: var(--light-gray-bg);
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color-dark);
+            padding: 20px;
+        }
+
+        .container-google-card {
+            background-color: white;
+            max-width: 650px; /* Slightly larger container for more fields */
+            padding: 40px;
+            box-shadow: var(--shadow-elevation);
+            border-radius: 12px;
+            border: 1px solid #dadce0;
+        }
+
+        /* --- TYPOGRAPHY AND HEADINGS --- */
+        h2 {
+            font-weight: 500;
+            color: var(--text-color-dark);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px !important;
+        }
+
+        h5 {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 15px !important;
+            display: flex;
+            align-items: center;
+        }
+        h5 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        /* --- FORM ELEMENTS --- */
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color-light);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 12px;
+            box-shadow: none !important;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #dadce0;
+            background-color: #fff;
+            color: var(--text-color-dark);
+        }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            /* Crisp blue outline shadow on focus */
+            box-shadow: 0 0 0 1px var(--primary-color), 0 0 0 4px rgba(66, 133, 244, 0.1) !important;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-primary:hover {
+            background-color: #3b7ae0;
+            border-color: #3b7ae0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #e5e5e5;
+            border-color: #ccc;
+            color: var(--text-color-light);
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #dcdcdc;
+            border-color: #bbb;
+            color: var(--text-color-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5 p-4 container-google-card mx-auto">
     <h2 class="mb-4 text-center">Create New Student</h2>
 
     <form method="POST" action="">
         {% csrf_token %}
         
-        <!-- User Account Details -->
-        <h5 class="mb-3">Account Information</h5>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" placeholder="Enter username" required>
+        <h5 class="mt-4"><i class="fas fa-user-circle"></i>Account Information</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="username" class="form-label"><i class="fas fa-user-tag text-secondary"></i> Username</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="Enter unique username" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="password" class="form-label"><i class="fas fa-lock text-secondary"></i> Password</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
-        </div>
-
-        <!-- Student Details -->
-        <h5 class="mb-3 mt-4">Student Information</h5>
+        <h5 class="mt-4"><i class="fas fa-graduation-cap"></i>Student Information</h5>
         
-        <div class="mb-3">
-            <label for="first_name" class="form-label">First Name</label>
-            <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter first name" required>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter first name" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter last name" required>
+            </div>
         </div>
 
         <div class="mb-3">
-            <label for="last_name" class="form-label">Last Name</label>
-            <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter last name" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email ID</label>
+            <label for="email" class="form-label"><i class="fas fa-envelope text-secondary"></i> Email ID</label>
             <input type="email" name="email" id="email" class="form-control" placeholder="Enter email address" required>
         </div>
 
-        <div class="mb-3">
-            <label for="roll_number" class="form-label">Roll Number</label>
-            <input type="text" name="roll_number" id="roll_number" class="form-control" placeholder="Enter roll number" required>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="roll_number" class="form-label"><i class="fas fa-id-badge text-secondary"></i> Roll Number</label>
+                <input type="text" name="roll_number" id="roll_number" class="form-control" placeholder="Enter roll number" required>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="class_level" class="form-label"><i class="fas fa-layer-group text-secondary"></i> Class Level</label>
+                <input type="text" name="class_level" id="class_level" class="form-control" placeholder="e.g., 10th Grade / Freshman" required>
+            </div>
         </div>
 
         <div class="mb-3">
-            <label for="class_level" class="form-label">Class Level</label>
-            <input type="text" name="class_level" id="class_level" class="form-control" placeholder="Enter class level" required>
+            <label for="department" class="form-label"><i class="fas fa-building text-secondary"></i> Department / Program</label>
+            <input type="text" name="department" id="department" class="form-control" placeholder="e.g., Computer Science / Arts" required>
         </div>
 
-        <div class="mb-3">
-            <label for="department" class="form-label">Department</label>
-            <input type="text" name="department" id="department" class="form-control" placeholder="Enter department" required>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary w-100">Create Student</button>
-            <a href="{% url 'student_list' %}" class="btn btn-secondary w-100">Cancel</a>
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-user-plus me-2"></i> Create Student
+            </button>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary w-100">
+                <i class="fas fa-times-circle me-2"></i> Cancel
+            </a>
         </div>
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
