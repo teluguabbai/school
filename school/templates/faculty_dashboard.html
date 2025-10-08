@@ -1,55 +1,135 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Mobile scaling -->
-    <title>Faculty Dashboard -  School</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faculty Dashboard - School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        /* Base Google-style Font and Background */
         body {
-            background-color: #f0f2f5;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa; /* Very light gray background */
+            color: #3c4043; /* Google's dark text color */
+        }
+        
+        /* Navbar - Clean and Elevated */
+        .navbar {
+            background-color: #ffffff !important; /* White AppBar */
+            border-bottom: 1px solid #dadce0;
+            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+        }
+        .navbar-brand {
+            color: #1a73e8 !important; /* Google Blue */
+            font-weight: 500;
+        }
+        .navbar-text {
+            color: #5f6368 !important; /* Subtle text */
+        }
+        
+        /* Cards - White and Elevated (Subtle Shadow) */
+        .card {
+            border: none; /* Remove default border */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .15), 0 2px 6px 2px rgba(60, 64, 67, .05);
+            transition: box-shadow 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 4px 8px 0 rgba(60, 64, 67, .2), 0 6px 20px 0 rgba(60, 64, 67, .1);
+        }
+
+        /* Card Headers - Use clean backgrounds, not hard colors */
+        .card-header {
+            background-color: #f7f7f7; /* Light header background */
+            color: #1a73e8; /* Blue accent for headers */
+            font-weight: 500;
+            border-bottom: 1px solid #dadce0;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+        /* Primary Buttons - Google Blue */
+        .btn-primary, .btn-success {
+            --bs-btn-bg: #1a73e8;
+            --bs-btn-border-color: #1a73e8;
+            --bs-btn-hover-bg: #1764cc;
+            --bs-btn-hover-border-color: #1764cc;
+            --bs-btn-active-bg: #1355b2;
+            --bs-btn-active-border-color: #1355b2;
+            border-radius: 4px;
+        }
+
+        /* Outline Button */
+        .btn-outline-light {
+            --bs-btn-color: #1a73e8;
+            --bs-btn-border-color: #1a73e8;
+            --bs-btn-hover-color: #ffffff;
+            --bs-btn-hover-bg: #1a73e8;
+        }
+
+        /* Custom Badge Colors for Status */
+        .badge.bg-success { background-color: #34a853 !important; } /* Google Green */
+        .badge.bg-danger { background-color: #ea4335 !important; } /* Google Red */
+        .badge {
+            font-weight: 400;
+        }
+
+        /* Accordion - Minimalist and Clean */
+        .accordion-item {
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .accordion-button {
+            color: #3c4043;
+            background-color: #ffffff;
+            font-weight: 500;
+            padding: 12px 16px;
+        }
+        .accordion-button:not(.collapsed) {
+            color: #1a73e8;
+            background-color: #e8f0fe; /* Light blue when open */
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
         }
         .accordion-button::after {
-            transition: transform .2s ease-in-out;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%235f6368'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
         }
-        .accordion-button:not(.collapsed)::after {
-            transform: rotate(180deg);
+
+        /* List Group for Homework */
+        .list-group-item {
+            border-color: #dadce0;
         }
-        /* Tables scroll on small devices */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        /* Adjust font sizes and buttons for mobile */
+
+        /* Responsive Adjustments (The original media query was fine, but let's ensure mobile buttons look great) */
         @media (max-width: 576px) {
-            h1 {
-                font-size: 1.5rem;
+            .btn-group-sm-block {
+                display: block;
+                width: 100%;
             }
-            .card-header {
-                font-size: 0.9rem;
+            .btn-group-sm-block .btn {
+                width: 100%;
+                margin-bottom: 8px !important;
             }
-            .btn-sm {
-                font-size: 0.75rem;
-                padding: 0.25rem 0.5rem;
-            }
-            .navbar-text {
-                font-size: 0.8rem;
+            /* Adjust padding for a less crowded look on small screens */
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="#"> School</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse ms-auto" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <div class="d-flex ms-auto flex-column flex-sm-row align-items-sm-center">
-                <span class="navbar-text text-white me-3 mb-2 mb-sm-0">
+                <span class="navbar-text me-3 mb-2 mb-sm-0">
                     Logged in as {{ faculty.user.first_name }}
                 </span>
                 <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
@@ -59,54 +139,49 @@
 </nav>
 
 <div class="container mt-4">
-    <h1 class="text-center mb-4">Welcome, {{ faculty.user.first_name }} (Faculty)</h1>
+    <h1 class="text-center mb-4" style="font-weight: 300;">Faculty Dashboard</h1>
 
     <div class="row">
-        <!-- Faculty Info -->
-        <div class="col-12 col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">Your Info</div>
+        <div class="col-12 col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">👤 Your Profile</div>
                 <div class="card-body">
-                    <p><strong>Username:</strong> {{ faculty.user.username }}</p>
-                    <p><strong>Email:</strong> {{ faculty.user.email }}</p>
-                    <p><strong>Department:</strong> {{ faculty.department }}</p>
+                    <p class="mb-1"><strong>Name:</strong> {{ faculty.user.first_name }} {{ faculty.user.last_name|default:"" }}</p>
+                    <p class="mb-1"><strong>Username:</strong> {{ faculty.user.username }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ faculty.user.email }}</p>
+                    <p class="mb-0"><strong>Department:</strong> {{ faculty.department }}</p>
                 </div>
             </div>
         </div>
 
-        <!-- Today's Attendance -->
-        <div class="col-12 col-md-8 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center flex-wrap">
-                    <span>📅 Today's Class-wise Attendance</span>
-                    <a href="{% url 'mark_attendance' %}" class="btn btn-sm btn-light mt-2 mt-sm-0">Mark Attendance</a>
+        <div class="col-12 col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                    <span>📅 Today's Class Attendance Summary</span>
+                    <a href="{% url 'mark_attendance' %}" class="btn btn-sm btn-success mt-2 mt-sm-0">Mark Attendance</a>
                 </div>
                 <div class="card-body table-responsive">
                     {% if today_attendance %}
-                        <table class="table table-bordered table-hover">
-                            <thead class="table-dark">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
                                     <th>Class</th>
-                                    <th>Total Students</th>
+                                    <th>Total</th>
                                     <th>Present</th>
                                     <th>Absent</th>
-                                    <th>Attendance %</th>
+                                    <th>%</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for class_level, data in today_attendance.items %}
                                     <tr>
                                         <td>
-                                            {{ class_level }}
-                                            {% if class_level == "1" %}<sup>st</sup>
-                                            {% elif class_level == "2" %}<sup>nd</sup>
-                                            {% elif class_level == "3" %}<sup>rd</sup>
-                                            {% else %}<sup>th</sup>{% endif %} Class
+                                            {{ class_level }}{% if class_level == "1" %}<sup>st</sup>{% elif class_level == "2" %}<sup>nd</sup>{% elif class_level == "3" %}<sup>rd</sup>{% else %}<sup>th</sup>{% endif %} Class
                                         </td>
                                         <td>{{ data.total }}</td>
                                         <td><span class="badge bg-success">{{ data.present }}</span></td>
                                         <td><span class="badge bg-danger">{{ data.absent }}</span></td>
-                                        <td>
+                                        <td class="fw-bold">
                                             {% if data.total > 0 %}
                                                 {{ data.percentage|floatformat:2 }}%
                                             {% else %}
@@ -118,36 +193,40 @@
                             </tbody>
                         </table>
                     {% else %}
-                        <p class="text-muted">No attendance records for today.</p>
+                        <p class="text-muted mb-0">No attendance records for today. Time to mark them! 🚀</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Homework Section -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-warning d-flex justify-content-between flex-wrap align-items-center">
-            <span>Assigned Homework</span>
-            <div class="mt-2 mt-sm-0">
-                <a href="{% url 'upload_homework' %}" class="btn btn-sm btn-dark me-2 mb-1 mb-sm-0">Assign Homework</a>
-                <a href="{% url 'add_marks' %}" class="btn btn-sm btn-dark me-2 mb-1 mb-sm-0">Add Marks</a>
-                <a href="{% url 'student_performance' %}" class="btn btn-sm btn-dark mb-1 mb-sm-0">View Student Performance</a>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between flex-wrap align-items-center bg-light">
+            <span>📚 Homework & Grading Actions</span>
+            <div class="mt-2 mt-sm-0 btn-group-sm-block">
+                <a href="{% url 'upload_homework' %}" class="btn btn-sm btn-primary me-2 mb-1 mb-sm-0">Assign Homework</a>
+                <a href="{% url 'add_marks' %}" class="btn btn-sm btn-primary me-2 mb-1 mb-sm-0">Add Marks</a>
+                <a href="{% url 'student_performance' %}" class="btn btn-sm btn-outline-primary mb-1 mb-sm-0">View Performance</a>
             </div>
         </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">📝 Recent Assigned Homework</div>
         <div class="card-body">
             {% if homework_list %}
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for hw in homework_list %}
-                        <li class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row">
-                            <div>
-                                <strong>{{ hw.title }}</strong> - Due: {{ hw.due_date|date:"d M Y" }}<br>
-                                {{ hw.description }}
+                        <li class="list-group-item d-flex justify-content-between align-items-start flex-column flex-md-row">
+                            <div class="mb-2 mb-md-0">
+                                <strong class="text-primary">{{ hw.title }}</strong>
+                                <span class="text-muted ms-3">Due: {{ hw.due_date|date:"d M Y" }}</span><br>
+                                <small class="text-secondary">{{ hw.description|truncatechars:100 }}</small>
                             </div>
-                            <div class="mt-2 mt-sm-0">
+                            <div>
                                 <a href="{% url 'delete_homework' hw.id %}"
                                    class="btn btn-sm btn-danger"
-                                   onclick="return confirm('Are you sure you want to delete this homework?');">
+                                   onclick="return confirm('Are you sure you want to delete this homework: {{ hw.title }}?');">
                                     Delete
                                 </a>
                             </div>
@@ -155,79 +234,72 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No homework assigned yet.</p>
+                <p class="text-muted">No homework has been assigned recently. Use the button above to assign new work!</p>
             {% endif %}
         </div>
     </div>
 
-    <!-- Attendance Section (Accordion) -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-info text-white">Class-wise Attendance (Date-wise)</div>
-        <div class="card-body">
-            {% if attendance_by_class %}
-            <div class="accordion" id="attendanceAccordion">
-                {% for class_level, records in attendance_by_class.items %}
-                    {% regroup records by date as date_list %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}">
-                                {{ class_level }}{% if class_level == "1" %}<sup>st</sup>{% elif class_level == "2" %}<sup>nd</sup>{% elif class_level == "3" %}<sup>rd</sup>{% else %}<sup>th</sup>{% endif %} Class
-                            </button>
-                        </h2>
-                        <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#attendanceAccordion">
-                            <div class="accordion-body table-responsive">
-                                <div class="accordion" id="dateAccordion-{{ forloop.counter }}">
-                                    {% for date_group in date_list %}
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="dateHeading-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                                                    {{ date_group.grouper|date:"d M Y" }}
-                                                </button>
-                                            </h2>
-                                            <div id="dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#dateAccordion-{{ forloop.parentloop.counter }}">
-                                                <div class="accordion-body table-responsive">
-                                                    <table class="table table-bordered table-striped">
-                                                        <thead class="table-dark">
+    <h2 class="h4 mt-5 mb-3" style="font-weight: 500;">Detailed Attendance History</h2>
+    <div class="accordion" id="attendanceAccordion">
+        {% if attendance_by_class %}
+            {% for class_level, records in attendance_by_class.items %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}">
+                            Class {{ class_level }}{% if class_level == "1" %}<sup>st</sup>{% elif class_level == "2" %}<sup>nd</sup>{% elif class_level == "3" %}<sup>rd</sup>{% else %}<sup>th</sup>{% endif %}
+                            <span class="badge bg-secondary ms-2">{{ records|length }} total records</span>
+                        </button>
+                    </h2>
+                    <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#attendanceAccordion">
+                        <div class="accordion-body p-3">
+                            <div class="accordion" id="dateAccordion-{{ forloop.counter }}">
+                                {% regroup records by date as date_list %}
+                                {% for date_group in date_list %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="dateHeading-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                                                Attendance for {{ date_group.grouper|date:"l, d M Y" }}
+                                            </button>
+                                        </h2>
+                                        <div id="dateCollapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#dateAccordion-{{ forloop.parentloop.counter }}">
+                                            <div class="accordion-body table-responsive">
+                                                <table class="table table-sm table-hover mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Student Name</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for record in date_group.list %}
                                                             <tr>
-                                                                <th>Student</th>
-                                                                <th>Status</th>
+                                                                <td>{{ record.student.user.get_full_name|default:record.student.user.username }}</td>
+                                                                <td>
+                                                                    {% if record.status == "Present" %}
+                                                                        <span class="badge bg-success">Present</span>
+                                                                    {% else %}
+                                                                        <span class="badge bg-danger">Absent</span>
+                                                                    {% endif %}
+                                                                </td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {% for record in date_group.list %}
-                                                                <tr>
-                                                                    <td>{{ record.student.user.get_full_name }}</td>
-                                                                    <td>
-                                                                        {% if record.status == "Present" %}
-                                                                            <span class="badge bg-success">Present</span>
-                                                                        {% else %}
-                                                                            <span class="badge bg-danger">Absent</span>
-                                                                        {% endif %}
-                                                                    </td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                    {% endfor %}
-                                </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-            {% else %}
-                <p>No attendance records available.</p>
-            {% endif %}
-        </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No historic attendance records available.</p>
+        {% endif %}
     </div>
 
-    <!-- Marks Management -->
-    <h2>Marks Management</h2>
-    <a href="{% url 'add_marks' %}" class="btn btn-success mb-3">Add Marks</a>
-
+    <h2 class="h4 mt-5 mb-3" style="font-weight: 500;">Student Marks Overview</h2>
     <div class="accordion" id="marksAccordion">
         {% regroup students by class_level as marks_class_list %}
         {% for class_group in marks_class_list %}
@@ -235,39 +307,36 @@
                 <h2 class="accordion-header" id="marksHeading{{ forloop.counter }}">
                     <button class="accordion-button collapsed" type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target="#marksCollapse{{ forloop.counter }}"
-                            aria-expanded="false"
-                            aria-controls="marksCollapse{{ forloop.counter }}">
-                        Class {{ class_group.grouper }}
+                            data-bs-target="#marksCollapse{{ forloop.counter }}">
+                        View Marks for Class {{ class_group.grouper }}
+                        <span class="badge bg-info text-dark ms-2">{{ class_group.list|length }} students</span>
                     </button>
                 </h2>
-                <div id="marksCollapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="marksHeading{{ forloop.counter }}" data-bs-parent="#marksAccordion">
-                    <div class="accordion-body table-responsive">
+                <div id="marksCollapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#marksAccordion">
+                    <div class="accordion-body">
                         <div class="accordion" id="studentAcc{{ forloop.counter }}">
                             {% for student in class_group.list %}
-                                <div class="accordion-item">
+                                <div class="accordion-item mb-2">
                                     <h2 class="accordion-header" id="studHeading{{ forloop.parentloop.counter }}-{{ student.id }}">
                                         <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target="#studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}"
-                                                aria-expanded="false"
-                                                aria-controls="studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}">
+                                                data-bs-target="#studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}">
                                             {{ student.user.get_full_name|default:student.user.username }}
-                                            {% if student.roll_number %} ({{ student.roll_number }}){% endif %}
+                                            {% if student.roll_number %}<small class="text-muted ms-2">(Roll: {{ student.roll_number }})</small>{% endif %}
                                         </button>
                                     </h2>
-                                    <div id="studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}" class="accordion-collapse collapse" aria-labelledby="studHeading{{ forloop.parentloop.counter }}-{{ student.id }}">
-                                        <div class="accordion-body table-responsive">
+                                    <div id="studCollapse{{ forloop.parentloop.counter }}-{{ student.id }}" class="accordion-collapse collapse">
+                                        <div class="accordion-body table-responsive p-3 bg-light">
                                             {% with marks=student.marks_set.all %}
                                                 {% if marks %}
                                                     {% regroup marks by exam_type as exam_groups %}
                                                     {% for exam_group in exam_groups %}
-                                                        <h5 class="bg-light p-2 mb-2">{{ exam_group.grouper|default:"General" }} Marks</h5>
-                                                        <table class="table table-bordered table-striped mb-4">
+                                                        <h5 class="h6 text-primary mt-2 mb-2">Exam: {{ exam_group.grouper|default:"General Exam" }}</h5>
+                                                        <table class="table table-bordered table-striped table-sm mb-4">
                                                             <thead class="table-dark">
                                                                 <tr>
                                                                     <th>Subject</th>
-                                                                    <th>Marks</th>
+                                                                    <th>Marks Scored</th>
                                                                     <th>Max Marks</th>
                                                                     <th>Actions</th>
                                                                 </tr>
@@ -276,10 +345,10 @@
                                                                 {% for mark in exam_group.list %}
                                                                     <tr>
                                                                         <td>{{ mark.subject }}</td>
-                                                                        <td>{{ mark.marks }}</td>
+                                                                        <td class="fw-bold text-success">{{ mark.marks }}</td>
                                                                         <td>{{ mark.max_marks }}</td>
                                                                         <td>
-                                                                            <a href="{% url 'edit_marks' mark.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                                                            <a href="{% url 'edit_marks' mark.id %}" class="btn btn-warning btn-sm me-1">Edit</a>
                                                                             <a href="{% url 'delete_marks' mark.id %}" class="btn btn-danger btn-sm">Delete</a>
                                                                         </td>
                                                                     </tr>
@@ -302,6 +371,8 @@
         {% endfor %}
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
