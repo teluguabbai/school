@@ -3,76 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - SDR School</title>
+    <title>School Portal Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <style>
+        /* SDR School Color Palette & Variables (Google-Standard) */
+        :root {
+            --primary-color: #4285F4; /* Google Blue */
+            --secondary-color: #34A853; /* Google Green Accent */
+            --light-gray-bg: #f8f9fa; /* Standard light background */
+            --text-color-dark: #202124;
+            --text-color-light: #5f6368;
+            /* Official Google-style shadow for card elevation */
+            --shadow-elevation: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+
+        /* --- BASE STYLES --- */
         body {
-            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            background-color: var(--light-gray-bg);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color-dark);
+            padding: 20px;
         }
 
         .container-login {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-elevation);
+            border: 1px solid #dadce0;
             text-align: center;
-            animation: fadeIn 1s ease-in-out;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        h1.heading {
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
+        /* --- TYPOGRAPHY --- */
+        .heading-container {
+            margin-bottom: 30px;
+        }
+        h1.heading-main {
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: var(--text-color-dark);
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+        .heading-subtitle {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-color-light);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color); 
+            display: inline-block;
         }
 
-        form .form-control, 
-        form .form-select {
-            border-radius: 10px;
-            padding: 10px;
+        /* --- FORM ELEMENTS: New Focus on .form-control Class --- */
+        .mb-3 {
+            margin-bottom: 20px !important;
         }
-
-        button.btn-primary {
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            padding: 10px;
+        .mb-3 label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-color-light);
+            display: flex;
+            align-items: center;
             font-size: 1rem;
         }
-
-        button.btn-primary:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
+        .mb-3 label i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
         }
 
+        .form-control {
+            border-radius: 8px;
+            padding: 14px 12px;
+            box-shadow: none !important;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #dadce0;
+            background-color: #fff;
+            color: var(--text-color-dark);
+            font-size: 1rem;
+            width: 100%; /* Ensure it spans full width */
+        }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            /* Crisp blue outline shadow on focus */
+            box-shadow: 0 0 0 1px var(--primary-color), 0 0 0 4px rgba(66, 133, 244, 0.1) !important;
+        }
+
+        /* --- BUTTONS --- */
+        button.btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 13px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-top: 25px;
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        button.btn-primary i {
+            margin-right: 10px;
+        }
+        button.btn-primary:hover {
+            background-color: #3b7ae0;
+            border-color: #3b7ae0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(66, 133, 244, 0.4);
+        }
+
+        /* --- ALERTS AND FOOTER --- */
         .alert {
             font-size: 0.9rem;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 12px;
+            font-weight: 400;
+            background-color: #fce8e6; 
+            color: #d93025;
+            border-color: #fce8e6;
+        }
+        .alert i {
+            margin-right: 8px;
+        }
+        .small a {
+            color: var(--text-color-light) !important;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+        .small a:hover {
+            color: var(--primary-color) !important;
         }
 
-        /* Smooth entry animation */
+        /* --- ANIMATION --- */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 576px) {
+        /* --- RESPONSIVENESS (Mobile-First Polish) --- */
+        @media (max-width: 480px) {
             .container-login {
-                padding: 20px;
+                padding: 30px 20px;
+                box-shadow: none;
+                border: none;
+                border-radius: 0; 
+                margin: 0;
             }
-            h1.heading {
-                font-size: 1.5rem;
+            body {
+                background-color: #ffffff;
+                align-items: flex-start; 
             }
         }
     </style>
@@ -80,11 +176,17 @@
 <body>
 
 <div class="container-login">
-    <h1 class="heading">Welcome to My School</h1>
+    <div class="heading-container">
+        <h1 class="heading-main">School</h1>
+        <p class="heading-subtitle">Portal Login</p>
+    </div>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-warning">{{ message }}</div>
+            <div class="alert alert-warning" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                {{ message }}
+            </div>
         {% endfor %}
     {% endif %}
 
@@ -92,29 +194,32 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
 
-        <div class="mb-3 text-start">
-            {{ form.username.label_tag }}
-            {{ form.username }}
+        <div class="mb-3 text-start" >
+            <label for="id_username">
+                <i class="fas fa-user"></i>
+                Username<span class="text-danger ms-1">*</span>
+            </label>
+            <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your username" required>
         </div>
 
         <div class="mb-3 text-start">
-            {{ form.password.label_tag }}
-            {{ form.password }}
+            <label for="id_password">
+                <i class="fas fa-lock"></i>
+                Password<span class="text-danger ms-1">*</span>
+            </label>
+             <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
         </div>
 
-        <div class="mb-3 text-start">
-            <label for="role" class="form-label">Choose Role</label>
-            <select name="role" id="role" class="form-select" required>
-                <option value="">-- Select Role --</option>
-                <option value="Admin">Admin</option>
-                <option value="Faculty">Faculty</option>
-                <option value="Student">Student</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="fas fa-sign-in-alt"></i> Login Securely
+        </button>
     </form>
+
+    <p class="mt-4 text-muted small">
+        <a href="#" class="text-decoration-none text-secondary">Trouble logging in? Contact support.</a>
+    </p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
