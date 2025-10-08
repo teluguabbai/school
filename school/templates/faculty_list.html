@@ -1,27 +1,234 @@
-<h2>Faculty List</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Employee ID</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for faculty in faculties %}
-        <tr>
-            <td>{{ faculty.user.username }}</td>
-            <td>{{ faculty.user.get_full_name }}</td>
-            <td>{{ faculty.user.email }}</td>
-            <td>{{ faculty.department }}</td>
-            <td>{{ faculty.employee_id }}</td>
-            <td>
-                <a href="#">Edit</a> | <a href="#">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --google-blue: #1a73e8;
+            --background-color: #f8f9fa;
+            --header-color: #202124;
+            --text-color: #5f6368;
+            --border-color: #dadce0;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Roboto', sans-serif;
+            color: var(--header-color);
+            padding: 20px;
+        }
+
+        .container-google {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+        }
+
+        /* --- Header and Back Button Styling --- */
+        .page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dadce0;
+        }
+        
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--header-color);
+            margin: 0;
+            flex-grow: 1; /* Allows the title to take up remaining space */
+        }
+        
+        .btn-back-google {
+            background: none;
+            border: none;
+            color: var(--google-blue);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back-google:hover {
+            background-color: #e8f0fe; /* Subtle blue background on hover */
+            color: var(--google-blue);
+        }
+
+        .btn-back-google .material-icons {
+            font-size: 20px;
+            margin-right: 4px;
+        }
+
+        /* --- Table Styling (Google Material Data Table) --- */
+        .table-google {
+            width: 100%;
+            border-collapse: collapse; /* Essential for clean table look */
+            background-color: #fff;
+            font-size: 0.95rem;
+        }
+        
+        .table-google thead {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-google th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 500;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            background-color: #f8f8f8; /* Very light gray for header */
+        }
+
+        .table-google td {
+            padding: 12px 16px;
+            border-top: 1px solid #eee; /* Subtle horizontal divider */
+            color: var(--header-color);
+            vertical-align: middle;
+        }
+        
+        .table-google tbody tr:hover {
+            background-color: #f5f5f5; /* Hover effect */
+        }
+
+        .table-google a {
+            color: var(--google-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .table-google a:hover {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+        
+        /* --- Responsive Design for Tables (Mobile View) --- */
+        @media (max-width: 768px) {
+            .container-google {
+                padding: 15px;
+                box-shadow: none; /* Full-width mobile look */
+            }
+            
+            /* Hides table headers */
+            .table-google thead {
+                display: none;
+            }
+
+            /* Treat table rows as blocks */
+            .table-google tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                background-color: #fff;
+            }
+
+            /* Treat table cells as blocks */
+            .table-google td {
+                display: block;
+                text-align: right;
+                border-top: none;
+                padding: 8px 16px;
+                position: relative;
+            }
+
+            /* Use ::before to display the column header name */
+            .table-google td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 500;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                color: var(--text-color);
+            }
+            
+            /* Special styling for the Actions field */
+            .table-google td:last-child {
+                border-top: 1px solid #eee;
+                text-align: center;
+                padding: 10px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-google">
+        
+        <div class="page-header">
+            <a href="javascript:history.back()" class="btn-back-google">
+                <span class="material-icons">arrow_back</span>
+                Back
+            </a>
+            <h2>Faculty List</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-google">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Employee ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for faculty in faculties %}
+                    <tr>
+                        <td data-label="Username">{{ faculty.user.username }}</td>
+                        <td data-label="Full Name">{{ faculty.user.get_full_name }}</td>
+                        <td data-label="Email">{{ faculty.user.email }}</td>
+                        <td data-label="Department">{{ faculty.department }}</td>
+                        <td data-label="Employee ID">{{ faculty.employee_id }}</td>
+                        <td data-label="Actions">
+                            <a href="#">Edit</a> | <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td data-label="Username">jsmith</td>
+                        <td data-label="Full Name">Jane Smith</td>
+                        <td data-label="Email">jane.s@uni.edu</td>
+                        <td data-label="Department">Computer Science</td>
+                        <td data-label="Employee ID">CS-0045</td>
+                        <td data-label="Actions">
+                            <a href="#">Edit</a> | <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="Username">m_khan</td>
+                        <td data-label="Full Name">Mohammed Khan</td>
+                        <td data-label="Email">m.khan@uni.edu</td>
+                        <td data-label="Department">Electrical Eng.</td>
+                        <td data-label="Employee ID">EE-0112</td>
+                        <td data-label="Actions">
+                            <a href="#">Edit</a> | <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
