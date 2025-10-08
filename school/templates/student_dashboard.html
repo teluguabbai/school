@@ -4,198 +4,324 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Dashboard - SDR School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
+        /* Modern, Clean Base Styles */
+        :root {
+            --primary-color: #1a73e8; /* Google Blue */
+            --success-color: #34a853; /* Google Green */
+            --info-color: #fbbc05; /* Google Yellow/Info */
+            --secondary-color: #5f6368;
+            --danger-color: #ea4335; /* Google Red */
+            --bg-light: #f8f9fa;
+        }
+
         body {
-            background-color: #f4f6f9;
-            font-family: Arial, sans-serif;
+            background-color: var(--bg-light);
+            font-family: 'Roboto', sans-serif;
+            color: #3c4043; /* Dark gray for body text */
+            line-height: 1.6;
         }
 
+        /* Titles and Typography */
         h1 {
-            font-weight: 700;
-            color: #333;
+            font-weight: 500;
+            color: #202124;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        h5 {
+            font-weight: 500;
+            color: var(--primary-color);
         }
 
+        /* Card - Material Design Look */
         .card {
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: none;
+            border-radius: 8px; /* Slightly less rounded for modern look */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Softer, layered shadow */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 6px 15px rgba(0, 0, 0, 0.08);
         }
 
+        /* Card Headers - Clean and Themed */
         .card-header {
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: white !important; /* Keep the header white */
+            color: var(--secondary-color) !important;
+            padding: 1rem 1.25rem;
         }
+        .card-header-primary { color: var(--primary-color) !important; }
+        .card-header-success { color: var(--success-color) !important; }
+        .card-header-info { color: #f9ab00 !important; } /* Use a darker yellow for visibility */
+        .card-header-warning { color: var(--danger-color) !important; } /* Homework as a high-priority warning */
+        .card-header-secondary { color: var(--secondary-color) !important; }
 
+        /* Tables */
         table {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        thead th {
+            background-color: #e8eaed !important; /* Light Google gray header */
+            color: #5f6368;
+            font-weight: 500;
+            border: none;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: rgba(0, 0, 0, 0.02);
         }
 
+        /* Attendance Visuals */
+        .attendance-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .attendance-percentage-box {
+            background-color: #e6f4ea; /* Light green box for attendance */
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        .percentage-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success-color);
+            display: block;
+        }
+        .low-attendance-text {
+            color: var(--danger-color);
+            font-weight: 500;
+            background-color: #fde6e4;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        /* Homework List */
         .list-group-item {
-            font-size: 0.95rem;
+            border: 1px solid #e8e8e8;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            padding: 12px 15px;
+            transition: background-color 0.2s;
+        }
+        .list-group-item:hover {
+            background-color: #f7f9fa;
+        }
+
+        /* Badges for Grade/Status */
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.7em;
+            border-radius: 4px;
         }
 
         /* Responsive Fix */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.6rem;
+        @media (max-width: 992px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
             }
-            .card {
+            .percentage-value {
+                font-size: 2rem;
+            }
+            .col-lg-4, .col-lg-8 {
                 margin-bottom: 20px;
-            }
-            table {
-                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- Logout Button -->
 <div class="container mt-3 text-end">
-    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</a>
 </div>
 
-<div class="container mt-4">
-    <h1 class="text-center mb-4">Welcome, {{ student.user.first_name }} {{ student.user.last_name }}</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Welcome, {{ student.user.first_name }} 👋</h1>
 
     <div class="row g-4">
-        <!-- Student Info -->
         <div class="col-lg-4 col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">Your Info</div>
+            <div class="card h-100">
+                <div class="card-header card-header-primary">Personal Information</div>
                 <div class="card-body">
-                    <p><strong>Username:</strong> {{ student.user.username }}</p>
-                    <p><strong>Email:</strong> {{ student.user.email }}</p>
-                    <p><strong>Department:</strong> {{ student.department }}</p>
-                    <p>
-                        <strong>Class:</strong> {{ student.class_level }}
-                        {% if student.class_level == "1" %}
-                            <sup>st</sup>
-                        {% elif student.class_level == "2" %}
-                            <sup>nd</sup>
-                        {% else %}
-                            <sup>th</sup>
-                        {% endif %}
-                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Username:</strong> <span class="text-muted">{{ student.user.username }}</span></li>
+                        <li class="list-group-item"><strong>Email:</strong> <span class="text-muted">{{ student.user.email }}</span></li>
+                        <li class="list-group-item"><strong>Department:</strong> <span class="text-muted">{{ student.department }}</span></li>
+                        <li class="list-group-item">
+                            <strong>Class:</strong> <span class="badge bg-primary fs-6">
+                                {{ student.class_level }}
+                                {% if student.class_level == "1" %}<sup>st</sup>
+                                {% elif student.class_level == "2" %}<sup>nd</sup>
+                                {% else %}<sup>th</sup>
+                                {% endif %}
+                            </span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Attendance -->
         <div class="col-lg-8 col-md-6">
-            <div class="card">
-                <div class="card-header bg-success text-white">Attendance</div>
-                <div class="card-body">
-                    <div class="card mb-3 shadow-sm">
-                        <div class="card-header bg-success text-white">Attendance Percentage</div>
-                        <div class="card-body">
-                            <h6>This Month</h6>
-                            <p><strong>Attendance Percentage:</strong> {{ attendance_percentage|floatformat:2 }}%</p>
-                            {% if attendance_percentage < 75 %}
-                                <p class="text-danger">⚠ Low attendance! Please improve.</p>
+            <div class="card h-100">
+                <div class="card-header card-header-success">Monthly Attendance Record</div>
+                <div class="card-body attendance-card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4 mb-3 mb-md-0">
+                            <div class="attendance-percentage-box">
+                                <small class="text-muted d-block mb-2">Total Percentage</small>
+                                <span class="percentage-value">{{ attendance_percentage|floatformat:2 }}%</span>
+                                {% if attendance_percentage < 75 %}
+                                    <p class="low-attendance-text mt-2">⚠ Low attendance! Improve soon.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            {% if attendance %}
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for record in attendance|slice:":5" %} <tr>
+                                                    <td>{{ record.date }}</td>
+                                                    <td>
+                                                        {% if record.status == 'Present' %}
+                                                            <span class="badge bg-success-subtle text-success">{{ record.status }}</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger-subtle text-danger">{{ record.status }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <small class="text-muted float-end">Showing last 5 records...</small>
+                            {% else %}
+                                <p class="alert alert-info text-center">No attendance records available for this month.</p>
                             {% endif %}
                         </div>
                     </div>
-
-                    {% if attendance %}
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for record in attendance %}
-                                        <tr>
-                                            <td>{{ record.date }}</td>
-                                            <td>{{ record.status }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p>No attendance records available.</p>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Marks -->
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">Marks</div>
+    <div class="card mt-5">
+        <div class="card-header card-header-info">Examination Marks Report</div>
         <div class="card-body">
             {% if marks_by_exam %}
+                <div class="accordion" id="marksAccordion">
                 {% for exam_type, exam_marks in marks_by_exam.items %}
-                    <h5 class="mt-3 text-primary">{{ exam_type }}</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Subject</th>
-                                    <th>Marks</th>
-                                    <th>Max Marks</th>
-                                    <th>Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for m in exam_marks %}
-                                    <tr>
-                                        <td>{{ m.subject }}</td>
-                                        <td>{{ m.marks }}</td>
-                                        <td>{{ m.max_marks }}</td>
-                                        <td>{{ m.grade }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="accordion-item my-3">
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" 
+                                    aria-controls="collapse{{ forloop.counter }}">
+                                {{ exam_type }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" 
+                             aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#marksAccordion">
+                            <div class="accordion-body p-3">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Marks</th>
+                                                <th>Max Marks</th>
+                                                <th>Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for m in exam_marks %}
+                                                <tr>
+                                                    <td>{{ m.subject }}</td>
+                                                    <td><span class="fw-bold text-primary">{{ m.marks }}</span></td>
+                                                    <td>{{ m.max_marks }}</td>
+                                                    <td>
+                                                        {% if m.grade == 'A' %}
+                                                            <span class="badge bg-success">A</span>
+                                                        {% elif m.grade == 'B' %}
+                                                            <span class="badge bg-primary">B</span>
+                                                        {% elif m.grade == 'C' %}
+                                                            <span class="badge bg-info text-dark">C</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">{{ m.grade }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
+                </div>
             {% else %}
-                <p>No marks available yet.</p>
+                <p class="alert alert-secondary text-center">No marks available yet. Check back after the examination period.</p>
             {% endif %}
         </div>
     </div>
 
-    <!-- Homework Assigned -->
-    <div class="card mt-4">
-        <div class="card-header bg-warning">Homework Assigned</div>
-        <div class="card-body">
+    <div class="card mt-5">
+        <div class="card-header card-header-warning">Assignments & Homework Due 📚</div>
+        <div class="card-body p-0">
             {% if homework_list %}
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for hw in homework_list %}
-                        <li class="list-group-item">
-                            <strong>{{ hw.title }}</strong> - Due: {{ hw.due_date }}<br>
-                            {{ hw.description }}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="text-dark">{{ hw.title }}</strong>
+                                <small class="text-muted d-block">{{ hw.description }}</small>
+                            </div>
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                                Due: {{ hw.due_date }}
+                            </span>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No homework assigned.</p>
+                <p class="alert alert-success m-3 text-center">🎉 No new homework assigned. Keep up the good work!</p>
             {% endif %}
         </div>
     </div>
 
-    <!-- Submissions -->
-    <div class="card mt-4 mb-5">
-        <div class="card-header bg-secondary text-white">Your Homework Submissions</div>
-        <div class="card-body">
+    <div class="card mt-5 mb-5">
+        <div class="card-header card-header-secondary">Your Submission History</div>
+        <div class="card-body p-0">
             {% if submissions %}
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for sub in submissions %}
-                        <li class="list-group-item">
-                            {{ sub.homework.title }} - Submitted at: {{ sub.submitted_at }}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong class="text-dark">{{ sub.homework.title }}</strong>
+                            <span class="badge bg-secondary px-3 py-2">Submitted: {{ sub.submitted_at }}</span>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>You haven’t submitted any homework yet.</p>
+                <p class="alert alert-info m-3 text-center">You haven’t submitted any homework yet.</p>
             {% endif %}
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
